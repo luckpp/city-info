@@ -169,3 +169,51 @@ public class Program
                 .UseNLog();
 }
 ```
+
+# Services
+
+Services can be registered in `Startup` class `ConfigureServices` method:
+
+```C#
+public void ConfigureServices(IServiceCollection services)
+{
+    ...
+#if DEBUG
+    services.AddTransient<IMailService, LocalMailService>();
+#else
+    services.AddTransient<IMailService, CloudMailService>();
+#endif
+}
+```
+
+In order to configure the services we can use the `appsettings.json` file:
+
+```json
+{
+  "mailSettings": {
+    "mailToAddress": "admin@mycompany.com",
+    "mailFromAddres": "noreply@mycompany.com"
+  }
+}
+```
+and use constructor injection for `IConfiguration`:
+
+```C#
+public class LocalMailService : IMailService
+{
+    private readonly IConfiguration _configuration;
+
+    public LocalMailService(IConfiguration configuration)
+    {
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+    public void Send(string subject, string message)
+    {
+        var mailFrom = _configuration["mailSettings:mailFromAddress"];
+        var mailTo = _configuration["mailSettings:mailToAddress"];
+        Debug.WriteLine($"Mail from {mailFrom} to {mailTo}, with LocalMailService.");
+        Debug.WriteLine($"Subject: {subject}");
+        Debug.WriteLine($"Message: {message}");
+    }
+}
+```

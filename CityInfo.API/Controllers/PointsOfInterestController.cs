@@ -1,6 +1,7 @@
 ﻿using CityInfo.API.Model;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,17 +14,35 @@ namespace CityInfo.API.Controllers
     [Route("api/cities/{cityId}/pointsofinterest")]
     public class PointsOfInterestController: ControllerBase
     {
+        private readonly ILogger<PointsOfInterestController> _logger;
+
+        // we use constructor injection -> the prefered way of requesting dependencies
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException("logger");
+        }
+
         [HttpGet]
         public IActionResult GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-
-            if (city == null)
+            try
             {
-                return NotFound();
-            }
+                var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
-            return Ok(city.PointsOfInterest);
+                if (city == null)
+                {
+                    _logger.LogInformation($"City with id {cityId} wasn't be found when accessing points of interest.");
+                    return NotFound();
+                }
+
+                return Ok(city.PointsOfInterest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting point of interest for city with id {cityId}.", ex);
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            
         }
 
         [HttpGet("{id}", Name = "GetPointOfInterest")]

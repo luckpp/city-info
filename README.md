@@ -90,5 +90,82 @@ For more complex validations one can have a look at https://github.com/FluentVal
 # Updating resources
 
 There are two ways of updating resources:
-- full update
-- partial update
+- full update (PUT)
+- partial update (PATCH)
+
+# Logging
+
+The default logger can be injected inside the controller:
+
+```C#
+public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+{
+    _logger = logger ?? throw new ArgumentNullException("logger");
+}
+```
+
+This logger logs only to the console but it can be overriden with a custom logger provider like **NLog**:
+https://github.com/NLog/NLog/wiki/Getting-started-with-ASP.NET-Core-2 (or -3)
+
+The corresponding nuget package is: **NLog.Web.AspNetCore**
+
+## Configure NLog
+
+- in the root folder of the project add `nlog.config`
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- enable asp.net core layout render -->
+	<extensions>
+		<add assembly="NLog.Web.AspNetCore"/>
+	</extensions>
+
+	<targets>
+		<target name="logfile" xsi:type="File" fileName="nlog-{shortdate}.log" />
+	</targets>
+
+	<rules>
+		<logger name="*" minlevel="Info" writeTo="logfile" />
+	</rules>
+</nlog>
+```
+
+NOTE: it is important that `nlog.config` is copied to the output directory.
+
+- tell the logger factory to use this provider:
+
+```C#
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // logger can not be injected here because the building container hasn't been setup yet
+        // so we get manually get the logger:
+        var logger = NLogBuilder
+            .ConfigureNLog("nlog.config")
+            .GetCurrentClassLogger();
+
+        try
+        {
+            logger.Info("Initializing application...");
+            CreateWebHostBuilder(args).Build().Run();
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Application stopped because of exception.");
+        }
+        finally
+        {
+            NLog.LogManager.Shutdown();
+        }
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseNLog();
+}
+```

@@ -170,7 +170,7 @@ public class Program
 }
 ```
 
-# Services
+# Services & Configuration
 
 Services can be registered in `Startup` class `ConfigureServices` method:
 
@@ -217,3 +217,28 @@ public class LocalMailService : IMailService
     }
 }
 ```
+
+### Scoping configuration files
+
+Configuration files can be scoped for different environments:
+- production
+- development
+- ...
+
+Example:
+- add `appsettings.Production.json` to the root of your project:
+
+```json
+{
+  "mailSettings": {
+    "mailToAddress": "admin@mycompany.com"
+  }
+}
+```
+
+NOTE: 
+- the appsettings.json will be ovewritten by `appsettings.Production.json` if you run in Production mode
+- in order to change the environment to Production mode:
+    - go to project project **Properties** -> **Debug**
+    - **Environment Variables:**
+    - **ASPNETCORE_ENVIRONMENT** -> **Production**

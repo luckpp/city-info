@@ -48,7 +48,8 @@ namespace CityInfo.API
             }
             else
             {
-                app.UseExceptionHandler();
+                //app.UseExceptionHandler();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseStatusCodePages(); // simple text-base handler for common status codes

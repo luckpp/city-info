@@ -26,14 +26,14 @@ namespace CityInfo.API
                         new PointOfInterestDto()
                         {
                             Id = 1,
-                            Name = "Name 1",
-                            Description = "Description 1"
+                            Name = "Central Park",
+                            Description = "Central Park is an urban park in New York City located between the Upper West and Upper East Sides of Manhattan."
                         },
                         new PointOfInterestDto()
                         {
                             Id = 2,
-                            Name = "Name 2",
-                            Description = "Description 2"
+                            Name = "Statue of Liberty",
+                            Description = "Colossal neoclassical sculpture on Liberty Island in New York Harbor within New York City"
                         }
                     }
                 },
@@ -47,14 +47,14 @@ namespace CityInfo.API
                         new PointOfInterestDto()
                         {
                             Id = 3,
-                            Name = "Name 3",
-                            Description = "Description 3"
+                            Name = "Botanic Park",
+                            Description = "A nice park close to the central old city , green and shadowy."
                         },
                         new PointOfInterestDto()
                         {
                             Id = 4,
-                            Name = "Name 4",
-                            Description = "Description 4"
+                            Name = "Theresia Bastion",
+                            Description = "Named after the Austrian Empress Maria Theresa, is the largest preserved piece of defensive wall of the Austrian-Hungarian fortress of Timișoara."
                         }
                     }
                 },
@@ -68,14 +68,14 @@ namespace CityInfo.API
                         new PointOfInterestDto()
                         {
                             Id = 5,
-                            Name = "Name 3",
-                            Description = "Description 3"
+                            Name = "Eiffel Tower",
+                            Description = "Is a wrought-iron lattice tower on the Champ de Mars."
                         },
                         new PointOfInterestDto()
                         {
                             Id = 6,
-                            Name = "Name 4",
-                            Description = "Description 4"
+                            Name = "Louvre",
+                            Description = "Is the world's largest art museum and a historic monument."
                         }
                     }
                 }

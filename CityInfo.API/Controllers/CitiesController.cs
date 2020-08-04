@@ -13,6 +13,7 @@ namespace CityInfo.API.Controllers
         [HttpGet]
         public IActionResult GetCities()
         {
+            //throw new Exception("Test exception!");
             return Ok(CitiesDataStore.Current.Cities);
         }
 
